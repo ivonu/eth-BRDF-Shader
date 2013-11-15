@@ -242,13 +242,10 @@ function locateAttribsAndUniforms(shaderProgram) {
 	shaderProgram.pointLightingLocationUniform = new Array();
 	shaderProgram.pointLightingColorUniform = new Array();
 	for (i = 0; i < 3; i++) {
-		shaderProgram.pointLightingLocationUniform[i] =
-			gl.getUniformLocation(shaderProgram, "lightPosition[" + i + "]");
-		shaderProgram.pointLightingColorUniform[i] =
-			gl.getUniformLocation(shaderProgram, "lightColor[" + i + "]");
+		shaderProgram.pointLightingLocationUniform[i] = gl.getUniformLocation(shaderProgram, "lightPosition[" + i + "]");
+		shaderProgram.pointLightingColorUniform[i] = gl.getUniformLocation(shaderProgram, "lightColor[" + i + "]");
 	}
-	shaderProgram.globalAmbientLightingColorUniform =
-		gl.getUniformLocation(shaderProgram, "globalAmbientLightColor");
+	shaderProgram.globalAmbientLightingColorUniform = gl.getUniformLocation(shaderProgram, "globalAmbientLightColor");
 }
 
 function display() {
