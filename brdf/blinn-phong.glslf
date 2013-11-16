@@ -29,9 +29,10 @@ void main() {
 
         // specular highlights
         if (materialShininess > 0.0) {
-            vec3 R = normalize(reflect(-L, N)); // vector of reflected light
             vec3 V = normalize(-pos); // vector from point to camera
-            color += materialSpecularColor * pow(max(0.0,dot(R, V)), materialShininess) * lightColor[i];
+            vec3 H = (L + V) / length(L + V); // halfway vector between L and V
+
+            color += materialSpecularColor * pow(max(0.0,dot(N, H)), materialShininess) * lightColor[i];
         }
     }
 
