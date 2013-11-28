@@ -113,30 +113,28 @@ float cnoise(vec3 P) {
     return 2.2 * n_xyz;
 }
 
-/*
-vec3 computeClouds(vec3 v) {
-    float p = 0.0;
-    float amplitude = 1.5;
-    float frequency = 0.5;
-    float scale = 0.75;
-    float shift = 60.0;
-    float x = scale * textureCoordinate.x + shift + 8.0  + v.x;
-    float y = scale * textureCoordinate.y + shift - 100.0+ v.y;
-    float z = scale * textureCoordinate.z + shift + 100.0+ v.z;
 
-    for (int i=0; i<6; i++) {
-        p += amplitude*(cnoise(frequency*vec3(x,y,z)));
+vec4 computeClouds(vec3 v) {
+    float p = 0.0;
+    float amplitude = 2.0;
+    float frequency = 01.75;
+    float scale = 0.75;
+    float shift = 0.0;
+    float x = scale * textureCoordinate.x + shift + v.x;
+    float y = scale * textureCoordinate.y + shift + v.y;
+    float z = scale * textureCoordinate.z + shift + v.z;
+
+    for (int i = 0; i < 6; i++) {
+        p += amplitude * (cnoise (frequency * vec3(x,y,z)));
         frequency *= 2.0;
-        amplitude *= 0.75;
+        amplitude *= 0.5;
     }
 
-    float c = sin(abs(x+abs(y)+abs(z) + p))/2.0 + cos(abs(z + p)*2.0)/2.0+0.5;
+    if (p > 0.0)
+        return vec4(color_grey * p, p);
 
-    if (c > 0.5)
-        return mix(vec3(0.0, 0.0, 0.0), color_grey, c/0.5);
-
-    return vec3(0.0, 0.0, 0.0);
-}*/
+    return vec4(0.0, 0.0, 0.0, 0.0);
+}
 
 vec3 computeLand() {
     float p = 0.0;
@@ -230,17 +228,6 @@ vec3 computeEarthNormals(vec3 N, float hight) {
     return normalize(N - max(1.0 - hight, 0.0));
 }
 
-/*vec3 computeCloudNormals(vec3 v, vec3 N, float cp) {
-    float eps = 0.001;
-    float c = bumpMapping(v)*0.5+0.5;
-    float cx = bumpMapping(vec3(v.x+eps, v.y, v.z));
-    float cy = bumpMapping(vec3(v.x, v.y+eps, v.z));
-    float cz = bumpMapping(vec3(v.x, v.y, v.z+eps));
-    vec3 df = vec3((cx*0.5+0.5-c)/eps, (cy*0.5+0.5-c)/eps, (cz*0.5+0.5-c)/eps);
-    df = normalize(df);
-    return normalize(N-max(cp,0.0)*df);
-}*/
-
 vec3 step = vec3(0.2, 0.4, 0.78);
 
 void main() {
@@ -252,63 +239,27 @@ void main() {
     vec3 normalDirection = normal;
 
     vec4 surfaceColor = getSurfaceColor();
-    //surfaceColor.xyz = vec3(1.0,0.0,0.0);
     bool is_ocean = (surfaceColor.w == 0.0);
 
-    //vec4 cloud_color = clamp(computeClouds(step*time), 0.0, 1.0);
+    vec4 cloudColor = clamp(computeClouds(step*time), 0.0, 1.0);
+    bool is_cloud = (cloudColor.w == 0.0);
 
-    //material_color += cloud_color;
-    //material_color = clamp(material_color, 0.0, 1.0);
-
-    //float cp = cloud_color.w;
     if (!is_ocean) {
         normalDirection = computeEarthNormals(normalDirection, surfaceColor.w);
     }
-
-    //gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    //gl_FragColor = clamp(gl_FragColor,0.0, 1.0);
 
     for (int i = 0; i < 1; i++) {
 
         vec3 lightDirection = normalize(lightPosition[i] - point);
         vec3 reflectedDirection = normalize(reflect(-lightDirection, normalDirection)); // vector of reflected light
 
-        //vec3 I = (material_color.xyz + cloud_color.xyz) * lightColor[i] * max(dot(lightDirection, N), 0.0);
-        //I += (cloud_color.xyz) * materialSpecularColor * lightColor[i] * pow(max(dot(-reflectedDirection,V), 0.0), materialShininess);
-
         // diffuse
-        color += surfaceColor.xyz * lightColor[i] * max(dot(lightDirection, normalDirection), 0.0);
+        color += (cloudColor.xyz + surfaceColor.xyz) * lightColor[i] * max(dot(lightDirection, normalDirection), 0.0);
 
         // specular highlight
-        color += materialSpecularColor * pow(max(0.0,dot(reflectedDirection,viewDirection)), materialShininess) * lightColor[i];
+        if (is_ocean)
+            color += materialSpecularColor * pow(max(0.0,dot(reflectedDirection,viewDirection)), materialShininess) * lightColor[i];
     }
 
-    gl_FragColor = clamp(vec4(color,1.0), 0.0, 1.0);
-
-
-
-/*
-    // ambient
-    vec3 color = globalAmbientLightColor * matColor;
-
-    vec3 point = position.xyz;
-
-    for (int i = 0; i < 3; i++) {
-
-        vec3 lightDirection = normalize(lightPosition[i]-point); // vector from point to light
-
-        // diffuse
-        color += matColor * max(0.0, dot(lightDirection, normal)) * lightColor[i];
-
-        // specular highlights
-        if (materialShininess > 0.0) {
-            vec3 reflectedDirection = normalize(reflect(-lightDirection, normal)); // vector of reflected light
-            vec3 viewDirection = normalize(-point); // vector from point to camera
-            color += matColor * pow(max(0.0,dot(reflectedDirection, viewDirection)), materialShininess) * lightColor[i];
-        }
-    }
-
-    // return color
-	gl_FragColor = clamp(vec4(color, 1.), 0., 1.);
-*/
+    gl_FragColor = clamp(vec4(color, 1.0), 0.0, 1.0);
 }
