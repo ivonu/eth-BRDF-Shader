@@ -135,7 +135,7 @@ void main() {
 
     vec3 point = position.xyz;
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 3; i++) {
 
         vec3 lightDirection = normalize(lightPosition[i]-point); // vector from point to light
 

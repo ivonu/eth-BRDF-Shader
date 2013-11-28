@@ -9,7 +9,7 @@ var shaders = new Array();
 var currentShader = 0;
 
 var currentMaterial = 0;
-var showTeapot = true;
+var showTeapot = false;
 
 var showCode = true;
 
@@ -137,6 +137,15 @@ function compileShader() {
 }
 
 // set uniforms
+function setTime() {
+
+    var newTime = (new Date().getTime() % (60*1000));
+
+    try {
+        var s = shaders[currentShader].program;
+        gl.uniform1f(s.timeUniform, newTime/(60*1000));
+    } catch(e) {}
+}
 function setTransformationMatrices() {
 	try {
 		var s = shaders[currentShader].program;
@@ -237,6 +246,8 @@ function locateAttribsAndUniforms(shaderProgram) {
 	shaderProgram.specularColorUniform = gl.getUniformLocation(shaderProgram, "materialSpecularColor");
 	shaderProgram.materialShininessUniform = gl.getUniformLocation(shaderProgram, "materialShininess");
 
+    shaderProgram.timeUniform = gl.getUniformLocation(shaderProgram, "time");
+
 	// get uniform locations for lights
 	shaderProgram.pointLightingLocationUniform = new Array();
 	shaderProgram.pointLightingColorUniform = new Array();
@@ -275,6 +286,8 @@ function display() {
 
 	setMaterialProperties();
 	setLights();
+
+    setTime();
 
 	// make two objects look in a similar scale
 	if (showTeapot) mat4.scale(mvMatrix, [0.2, 0.2, 0.2]);
