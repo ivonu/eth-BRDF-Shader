@@ -14,9 +14,6 @@ varying vec3 normal;
 varying vec4 position;
 varying vec3 textureCoordinate;
 
-uniform int NoisePerm[512];
-uniform vec3 Grad[12];
-
 vec3 color_dark = vec3(1.0/255.0, 2.0/255.0, 3.0/255.0);
 vec3 color_bright = vec3(242.0/255.0, 193.0/255.0, 133.0/255.0);
 
