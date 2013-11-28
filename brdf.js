@@ -11,7 +11,7 @@ var currentShader = 0;
 var currentMaterial = 0;
 var showTeapot = true;
 
-var showCode = false;
+var showCode = true;
 
 // 3 point light sources
 var lights = new Array();
@@ -137,7 +137,6 @@ function compileShader() {
 }
 
 // set uniforms
-
 function setTransformationMatrices() {
 	try {
 		var s = shaders[currentShader].program;
@@ -399,16 +398,16 @@ function keyboard(event) {
 
 	// returning false prevents further propagation of the event
 
-	if (keyStr == " ") {
+	if (event.shiftKey && keyStr == " ") {
 		currentMaterial = (currentMaterial + 1) % materials.length;
 		return false;
-	} else if (keyCode == 13) {
+	} else if (event.shiftKey && keyCode == 13) {
 		showTeapot = !showTeapot;
 		return false;
-	} else if (keyStr.toLowerCase() == "e") {
+	} else if (event.shiftKey && keyStr.toLowerCase() == "e") {
 		exportPNG();
 		return false;
-	} else if (keyStr.toLowerCase() == "h") {
+	} else if (event.shiftKey && keyStr.toLowerCase() == "h") {
 		showMessage("************************");
 		showMessage("<enter>: change model");
 		showMessage("<space>: change material");
