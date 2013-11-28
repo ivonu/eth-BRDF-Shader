@@ -131,7 +131,7 @@ void main() {
     vec3 color = globalAmbientLightColor * materialAmbientColor;
 
     vec3 point = position.xyz;
-    vec3 normal = normalize(normal);
+    vec3 normalDirection = normalize(normal);
 
     vec3 viewDirection = normalize(-point); // vector from point to camera
 
@@ -148,9 +148,9 @@ void main() {
         vec3 lightDirection = normalize(lightPosition[i] - point); // vector from point to light
         vec3 halfwayDirection = normalize(lightDirection + viewDirection); // halfway vector between lightDirection and viewDirection
 
-        float normalDlight   = max(0.0, dot(normal, lightDirection));
-        float normalDview    = max(0.0, dot(normal, viewDirection));
-        float normalDhalfway = max(0.0, dot(normal, halfwayDirection));
+        float normalDlight   = max(0.0, dot(normalDirection, lightDirection));
+        float normalDview    = max(0.0, dot(normalDirection, viewDirection));
+        float normalDhalfway = max(0.0, dot(normalDirection, halfwayDirection));
         float viewDhalfway   = max(0.0, dot(viewDirection, halfwayDirection));
 
         float a = acos(normalDhalfway); // angle between normal and halfway

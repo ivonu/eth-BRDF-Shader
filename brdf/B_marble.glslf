@@ -10,6 +10,8 @@ uniform vec3 lightPosition[3];
 uniform vec3 lightColor[3];
 uniform vec3 globalAmbientLightColor;
 
+uniform float objectSize;
+
 varying vec3 textureCoordinate;
 varying vec3 normal;
 varying vec4 position;
@@ -105,22 +107,23 @@ float cnoise(vec3 P) {
 
 vec3 getMarbleColor() {
 
-    float scale = 1.0;
+    float scale = 7.0/objectSize;
     float shift = 0.0;
-    float x = scale * textureCoordinate.x + shift + 7.0;
+    float x = scale * textureCoordinate.x + shift + 0.0;
     float y = scale * textureCoordinate.y + shift + 0.0;
     float z = scale * textureCoordinate.z + shift + 0.0;
 
-    float frequency = 1.;
-    float amplitude = 1.;
+    float frequency = 0.3;
+    float amplitude = 5.3;
     float c = 0.;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 5; i++) {
         c += amplitude * abs(cnoise (frequency * vec3(x,y,z)));
-        amplitude *= 0.75;
+        amplitude *= 0.55;
         frequency *= 2.;
     }
 
     c = sin(x + c);
+    c = c;
 
     return mix (color_bright, color_dark, c);
 }
@@ -128,23 +131,23 @@ vec3 getMarbleColor() {
 
 void main() {
     vec3 matColor = getMarbleColor();
-    //vec3 matColor = vec3(0.8,0.8,0.0);//materialDiffuseColor;
 
     // ambient
     vec3 color = globalAmbientLightColor * matColor;
 
+    vec3 normalDirection = normalize(normal);
     vec3 point = position.xyz;
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 1; i++) {
 
         vec3 lightDirection = normalize(lightPosition[i]-point); // vector from point to light
 
         // diffuse
-        color += matColor * max(0.0, dot(lightDirection, normal)) * lightColor[i];
+        color += matColor * max(0.0, dot(lightDirection, normalDirection)) * lightColor[i];
 
         // specular highlights
         if (materialShininess > 0.0) {
-            vec3 reflectedDirection = normalize(reflect(-lightDirection, normal)); // vector of reflected light
+            vec3 reflectedDirection = normalize(reflect(-lightDirection, normalDirection)); // vector of reflected light
             vec3 viewDirection = normalize(-point); // vector from point to camera
             color += matColor * pow(max(0.0,dot(reflectedDirection, viewDirection)), materialShininess) * lightColor[i];
         }

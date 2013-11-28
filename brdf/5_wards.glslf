@@ -10,22 +10,21 @@ uniform vec3 lightPosition[3];
 uniform vec3 lightColor[3];
 uniform vec3 globalAmbientLightColor;
 
-varying vec2 vTC;
-varying vec3 vN;
-varying vec4 vP;
-varying vec3 vTan;
+varying vec3 normal;
+varying vec4 position;
+varying vec3 tangent;
 
 void main() {
     // ambient
     vec3 color = globalAmbientLightColor * materialAmbientColor;
 
-    vec3 point = vP.xyz;
-    vec3 normal = normalize(vN);
+    vec3 point = position.xyz;
+    vec3 normalDirection = normalize(normal);
 
     vec3 viewDirection = normalize(-point); // vector from point to camera
 
-    vec3 X = normalize(vTan);
-    vec3 Y = normalize(cross(normal,X));
+    vec3 X = normalize(tangent);
+    vec3 Y = normalize(cross(normalDirection,X));
 
     float aX = 0.088;
     float aY = 0.13;
@@ -44,11 +43,11 @@ void main() {
         color += pd * materialDiffuseColor * max(0.0, dot(lightDirection, normal)) * lightColor[i];
 
         // specular highlights
-        if (materialShininess > 0.0 && dot(lightDirection, normal) >= 0.0) {
+        if (materialShininess > 0.0 && dot(lightDirection, normalDirection) >= 0.0) {
 
-            float viewDnormal  = max(0.0, dot(viewDirection, normal));
-            float lightDnormal = max(0.0, dot(lightDirection, normal));
-            float halfDnormal  = max(0.0, dot(halfwayDirection, normal));
+            float viewDnormal  = max(0.0, dot(viewDirection, normalDirection));
+            float lightDnormal = max(0.0, dot(lightDirection, normalDirection));
+            float halfDnormal  = max(0.0, dot(halfwayDirection, normalDirection));
             float halfDx       = max(0.0, dot(halfwayDirection, X));
             float haldDy       = max(0.0, dot(halfwayDirection, Y));
 

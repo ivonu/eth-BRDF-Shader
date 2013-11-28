@@ -7,12 +7,12 @@ uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat3 normalMatrix;
 
-varying vec3 vN;
-varying vec4 vP;
+varying vec3 normal;
+varying vec4 position;
 
 void main(void) {
-    vP = modelViewMatrix * vec4(vertexPosition, 1.);
-	vN = normalMatrix * vertexNormal;
+    position = modelViewMatrix * vec4(vertexPosition, 1.);
+	normal = normalMatrix * vertexNormal;
 
-	gl_Position = projectionMatrix * vP;
+	gl_Position = projectionMatrix * position;
 }

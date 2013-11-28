@@ -205,7 +205,7 @@ float bumpMapping(vec3 shift) {
     return p;
 }
 
-vec3 computeEarthNormals(vec3 N, float hight) {
+vec3 computeEarthNormals(vec3 N, float height, float cloudiness) {
     float eps = 1.0;
     float aX = bumpMapping(vec3(eps, 0.0, 0.0)) * 0.1;
     float aY = bumpMapping(vec3(0.0, eps, 0.0)) * 0.1;
@@ -225,7 +225,7 @@ vec3 computeEarthNormals(vec3 N, float hight) {
     
     N = rotX * rotY * rotZ * N;
     
-    return normalize(N - max(1.0 - hight, 0.0));
+    return normalize(N - max(1.0 - height, 0.0));
 }
 
 vec3 step = vec3(0.2, 0.4, 0.78);
@@ -238,14 +238,16 @@ void main() {
     vec3 viewDirection = normalize(-point);
     vec3 normalDirection = normal;
 
+
+    vec4 cloudColor = clamp(computeClouds(step*time), 0.0, 1.0);
+    bool is_cloud = (cloudColor.w > 0.0);
+    
     vec4 surfaceColor = getSurfaceColor();
     bool is_ocean = (surfaceColor.w == 0.0);
 
-    vec4 cloudColor = clamp(computeClouds(step*time), 0.0, 1.0);
-    bool is_cloud = (cloudColor.w == 0.0);
 
-    if (!is_ocean) {
-        normalDirection = computeEarthNormals(normalDirection, surfaceColor.w);
+    if (!is_ocean && !is_cloud) {
+        normalDirection = computeEarthNormals(normalDirection, surfaceColor.w, cloudColor.w);
     }
 
     for (int i = 0; i < 1; i++) {

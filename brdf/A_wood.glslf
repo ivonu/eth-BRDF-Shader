@@ -10,6 +10,8 @@ uniform vec3 lightPosition[3];
 uniform vec3 lightColor[3];
 uniform vec3 globalAmbientLightColor;
 
+uniform float objectSize;
+
 varying vec3 textureCoordinate;
 varying vec3 normal;
 varying vec4 position;
@@ -105,7 +107,7 @@ float cnoise(vec3 P) {
 
 vec3 getWoodColor() {
 
-    float scale = 1.0;
+    float scale = 2.0/objectSize;
     float shift = 0.0;
     float x = scale * textureCoordinate.x + shift + 7.0;
     float y = scale * textureCoordinate.y + shift + 0.0;
@@ -134,17 +136,18 @@ void main() {
     vec3 color = globalAmbientLightColor * matColor;
 
     vec3 point = position.xyz;
+    vec3 normalDirection = normalize(normal);
 
     for (int i = 0; i < 3; i++) {
 
         vec3 lightDirection = normalize(lightPosition[i]-point); // vector from point to light
 
         // diffuse
-        color += matColor * max(0.0, dot(lightDirection, normal)) * lightColor[i];
+        color += matColor * max(0.0, dot(lightDirection, normalDirection)) * lightColor[i];
 
         // specular highlights
         if (materialShininess > 0.0) {
-            vec3 reflectedDirection = normalize(reflect(-lightDirection, normal)); // vector of reflected light
+            vec3 reflectedDirection = normalize(reflect(-lightDirection, normalDirection)); // vector of reflected light
             vec3 viewDirection = normalize(-point); // vector from point to camera
             color += matColor * pow(max(0.0,dot(reflectedDirection, viewDirection)), materialShininess) * lightColor[i];
         }

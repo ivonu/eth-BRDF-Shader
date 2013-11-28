@@ -6,7 +6,7 @@ var canvas = null;
 
 var shadersList = new Array();
 var shaders = new Array();
-var currentShader = 0;
+var currentShader = 3;
 
 var currentMaterial = 0;
 var showTeapot = false;
@@ -137,9 +137,16 @@ function compileShader() {
 }
 
 // set uniforms
+function setObjectSize() {
+	try {
+        var s = shaders[currentShader].program;
+        gl.uniform1f(s.objectSizeUniform, showTeapot ? 5.0 : 1.0);
+    } catch(e) {}	
+}
+
 function setTime() {
 
-    var newTime = (new Date().getTime() % (60*1000));
+    var newTime = (new Date().getTime() % (60*60*1000));
 
     try {
         var s = shaders[currentShader].program;
@@ -247,6 +254,7 @@ function locateAttribsAndUniforms(shaderProgram) {
 	shaderProgram.materialShininessUniform = gl.getUniformLocation(shaderProgram, "materialShininess");
 
     shaderProgram.timeUniform = gl.getUniformLocation(shaderProgram, "time");
+    shaderProgram.objectSizeUniform = gl.getUniformLocation(shaderProgram, "objectSize");
 
 	// get uniform locations for lights
 	shaderProgram.pointLightingLocationUniform = new Array();
@@ -288,6 +296,7 @@ function display() {
 	setLights();
 
     setTime();
+    setObjectSize()
 
 	// make two objects look in a similar scale
 	if (showTeapot) mat4.scale(mvMatrix, [0.2, 0.2, 0.2]);

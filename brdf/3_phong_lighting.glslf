@@ -10,28 +10,29 @@ uniform vec3 lightPosition[3];
 uniform vec3 lightColor[3];
 uniform vec3 globalAmbientLightColor;
 
-varying vec3 vN;
-varying vec4 vP;
+varying vec3 normal;
+varying vec4 position;
 
 void main() {
     // ambient
     vec3 color = globalAmbientLightColor * materialAmbientColor;
 
 
-    vec3 pos = vP.xyz;
-    vec3 N = normalize(vN);
+    vec3 point = position.xyz;
+    vec3 normalDirection = normalize(normal);
+    
     for (int i = 0; i < 3; i++) {
 
-        vec3 L = normalize(lightPosition[i]-pos); // vector from point to light
+        vec3 lightDirection = normalize(lightPosition[i]-point); // vector from point to light
 
         // diffuse
-        color += materialDiffuseColor * max(0.0, dot(L, N)) * lightColor[i];
+        color += materialDiffuseColor * max(0.0, dot(lightDirection, normalDirection)) * lightColor[i];
 
         // specular highlights
         if (materialShininess > 0.0) {
-            vec3 R = normalize(reflect(-L, N)); // vector of reflected light
-            vec3 V = normalize(-pos); // vector from point to camera
-            color += materialSpecularColor * pow(max(0.0,dot(R, V)), materialShininess) * lightColor[i];
+            vec3 reflectedDirection = normalize(reflect(-lightDirection, normalDirection)); // vector of reflected light
+            vec3 viewDirection = normalize(-point); // vector from point to camera
+            color += materialSpecularColor * pow(max(0.0,dot(reflectedDirection, viewDirection)), materialShininess) * lightColor[i];
         }
     }
 

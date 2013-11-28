@@ -10,8 +10,8 @@ uniform vec3 lightPosition[3];
 uniform vec3 lightColor[3];
 uniform vec3 globalAmbientLightColor;
 
-varying vec3 vN;
-varying vec4 vP;
+varying vec3 normal;
+varying vec4 position;
 
 void main() {
     // ambient
@@ -19,12 +19,12 @@ void main() {
 
 
     // diffuse
-    vec3 pos = vP.xyz;
-    vec3 n = normalize(vN);
+    vec3 point = position.xyz;
+    vec3 normalDirection = normalize(normal);
     for (int i = 0; i < 3; i++) {
 
-        vec3 point2light = normalize(lightPosition[i]-pos);
-        color += materialDiffuseColor * max(0.0, dot(n, point2light)) * lightColor[i];
+        vec3 lightDirection = normalize(lightPosition[i]-point);
+        color += materialDiffuseColor * max(0.0, dot(normalDirection, lightDirection)) * lightColor[i];
     }
 
     // return color
