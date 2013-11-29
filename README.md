@@ -1,8 +1,6 @@
 # BRDF Shader
-=========
 
 ## Implemented features:
-------------------------------------------------------------------------
 
 ### Shaders
 ------------------------------------------------------------------------
@@ -50,5 +48,4 @@ A 3D Perlin Noise function is used to model islands with desserts, clouds and wa
 And bump mapping is also implemented with perlin noise.
 
 # Run
-========================================================================
 To run the framework, you need to start index.html in your browser (recent versions of Firefox and Chrome are supported, don't use IE)
