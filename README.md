@@ -49,3 +49,4 @@ And bump mapping is also implemented with perlin noise.
 
 # Run
 To run the framework, you need to start index.html in your browser (recent versions of Firefox and Chrome are supported, don't use IE)
+It is also live available: http://raytracer.stvturgi.ch/brdf/index.html

@@ -165,7 +165,7 @@ vec4 getSurfaceColor() {
     float p = 0.0;
     float amplitude = 2.0;
     float frequency = 2.0;
-    float scale = 1.0*(1.0/objectSize);
+    float scale = 0.5*(1.0/objectSize);
     float shift = 0.0;
     float x = scale * textureCoordinate.x + shift;
     float y = scale * textureCoordinate.y + shift;
@@ -178,7 +178,7 @@ vec4 getSurfaceColor() {
     }
 
     // water
-    if (p < 0.7)
+    if (p < 0.5)
         return vec4 (mix (color_dark_blue, color_light_blue, p+5.0), 0.0);
 
     // beach
@@ -240,17 +240,16 @@ void main() {
     vec3 viewDirection = normalize(-point);
     vec3 normalDirection = normal;
 
-
-    vec4 cloudColor = clamp(computeClouds(step*time), 0.0, 1.0);
+    vec4 cloudColor = clamp(computeClouds(step*time)*1.5, 0.0, 1.0);
     bool is_cloud = (cloudColor.w > 0.0);
     
     vec4 surfaceColor = getSurfaceColor();
     bool is_ocean = (surfaceColor.w == 0.0);
 
 
-    if (!is_ocean && !is_cloud) {
+    if (!is_ocean && !is_cloud)
         normalDirection = computeEarthNormals(normalDirection, surfaceColor.w, cloudColor.w);
-    }
+
     
     // ambient
     color += (cloudColor.xyz + surfaceColor.xyz) * globalAmbientLightColor;
@@ -261,11 +260,11 @@ void main() {
         vec3 reflectedDirection = normalize(reflect(-lightDirection, normalDirection)); // vector of reflected light
 
         // diffuse
-        color += (cloudColor.xyz + surfaceColor.xyz) * lightColor[i] * max(dot(lightDirection, normalDirection), 0.0);
+        color += (cloudColor.xyz + surfaceColor.xyz) * lightColor[0] * max(dot(lightDirection, normalDirection), 0.0) * (1./objectSize);
 
         // specular highlight
-        if (is_ocean)
-            color += materialSpecularColor * pow(max(0.0,dot(reflectedDirection,viewDirection)), materialShininess) * lightColor[i];
+        if (is_ocean && !is_cloud)
+            color += materialSpecularColor * pow(max(0.0,dot(reflectedDirection,viewDirection)), materialShininess) * lightColor[0] * (1./objectSize);
     }
 
     gl_FragColor = clamp(vec4(color, 1.0), 0.0, 1.0);
