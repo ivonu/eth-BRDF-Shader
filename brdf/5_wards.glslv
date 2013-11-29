@@ -11,10 +11,11 @@ varying vec3 normal;
 varying vec4 position;
 varying vec3 tangent;
 
+
 void main(void) {
     position = modelViewMatrix * vec4(vertexPosition, 1.);
 	normal = normalMatrix * vertexNormal;
-	tangent = cross(normal, vec3(1.0,0.0,0.0));
+	tangent = cross(normal, normalize(vec3(1.0,1.0,0.0)));
 
 	gl_Position = projectionMatrix * position;
 }

@@ -11,6 +11,7 @@ uniform vec3 lightColor[3];
 uniform vec3 globalAmbientLightColor;
 
 uniform float time;
+uniform float objectSize;
 
 varying vec3 textureCoordinate;
 varying vec3 normal;
@@ -118,7 +119,7 @@ vec4 computeClouds(vec3 v) {
     float p = 0.0;
     float amplitude = 2.0;
     float frequency = 01.75;
-    float scale = 0.75;
+    float scale = 0.75*(1.0/objectSize);
     float shift = 0.0;
     float x = scale * textureCoordinate.x + shift + v.x;
     float y = scale * textureCoordinate.y + shift + v.y;
@@ -140,7 +141,7 @@ vec3 computeLand() {
     float p = 0.0;
     float amplitude = 1.5;
     float frequency = 0.5;
-    float scale = 10.0;
+    float scale = 10.0*(1.0/objectSize);
     float shift = 0.0;
     float x = scale * textureCoordinate.x + shift;
     float y = scale * textureCoordinate.y + shift;
@@ -164,7 +165,7 @@ vec4 getSurfaceColor() {
     float p = 0.0;
     float amplitude = 2.0;
     float frequency = 2.0;
-    float scale = 1.0;
+    float scale = 1.0*(1.0/objectSize);
     float shift = 0.0;
     float x = scale * textureCoordinate.x + shift;
     float y = scale * textureCoordinate.y + shift;
@@ -192,7 +193,7 @@ float bumpMapping(vec3 shift) {
     float p = 0.0;
     float amplitude = 1.5;
     float frequency = 0.5;
-    float scale = 1.0;
+    float scale = 1.0*(1.0/objectSize);
     float x = shift.x + textureCoordinate.x * scale;
     float y = shift.y + textureCoordinate.y * scale;
     float z = shift.z + textureCoordinate.z * scale;
