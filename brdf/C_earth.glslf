@@ -250,6 +250,9 @@ void main() {
     if (!is_ocean && !is_cloud) {
         normalDirection = computeEarthNormals(normalDirection, surfaceColor.w, cloudColor.w);
     }
+    
+    // ambient
+    color += (cloudColor.xyz + surfaceColor.xyz) * globalAmbientLightColor;
 
     for (int i = 0; i < 1; i++) {
 
