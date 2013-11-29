@@ -17,7 +17,6 @@ void main() {
     // ambient
     vec3 color = globalAmbientLightColor * materialAmbientColor;
 
-
     vec3 point = position.xyz;
     vec3 normalDirection = normalize(normal);
     

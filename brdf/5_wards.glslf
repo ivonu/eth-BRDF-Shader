@@ -28,7 +28,7 @@ void main() {
     float alphaY = 0.75;	
 	float PI = 3.14159;
 	
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 3; i++) {
 		vec3 lightDirection = normalize(lightPosition[i]-point);
 		vec3 halfwayDirection = normalize(viewDirection + lightDirection);
 
@@ -44,7 +44,7 @@ void main() {
 			float tmp = -2.0 * (pow((dotHX / alphaX), 2.0) + pow((dotHY / alphaY), 2.0) / (1.0 + dotHN));
 			float spec = (1.0 / (4.0 * PI * alphaX * alphaY)) * (sqrt(dotNL / dotNV)) * exp(tmp);
 			
-			color += clamp (materialDiffuseColor*dotNL + materialSpecularColor*spec*1.5, 0.0, 1.0);
+			color += clamp (materialDiffuseColor*dotNL*lightColor[i] + lightColor[i]*materialSpecularColor*spec*1.5, 0.0, 1.0);
 		}
 	}
 

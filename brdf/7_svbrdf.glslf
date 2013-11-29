@@ -10,6 +10,8 @@ uniform vec3 lightPosition[3];
 uniform vec3 lightColor[3];
 uniform vec3 globalAmbientLightColor;
 
+uniform float objectSize;
+
 varying vec3 normal;
 varying vec4 position;
 varying vec3 textureCoordinate;
@@ -108,9 +110,10 @@ float color_mixer() {
     float p = 0.0;
     float a = 1.5;
     float f = 0.5;
-    float x = textureCoordinate.x * 0.2;
-    float y = textureCoordinate.y * 0.2;
-    float z = textureCoordinate.z * 0.2;
+    float scale = 1.0 * (1.0/objectSize);
+    float x = textureCoordinate.x * scale;
+    float y = textureCoordinate.y * scale;
+    float z = textureCoordinate.z * scale;
 
     for (int i=0; i<12; i++) {
         p += a*(cnoise(vec3(x*f, y*f, z*f)));

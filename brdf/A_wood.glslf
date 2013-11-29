@@ -107,9 +107,9 @@ float cnoise(vec3 P) {
 
 vec3 getWoodColor() {
 
-    float scale = 2.0/objectSize;
+    float scale = 10.0/objectSize;
     float shift = 0.0;
-    float x = scale * textureCoordinate.x + shift + 7.0;
+    float x = scale * textureCoordinate.x + shift + 50.0;
     float y = scale * textureCoordinate.y + shift + 0.0;
     float z = scale * textureCoordinate.z + shift + 0.0;
 

@@ -11,12 +11,6 @@
     <script type="text/javascript" src="sphere.js"></script>
     <script type="text/javascript" src="brdf.js"></script>
 
-    <!--
-    define material properties
-
-    modify the two sets of meterial properties to best replicate the given materials
-    -->
-
     <script type="text/javascript">
       // be warned that objects are not copied, but their references.
       var WHITE3 = new Float32Array([1, 1, 1]);
@@ -24,63 +18,22 @@
       var BLUE3 = new Float32Array([.7, .7, 1]);
 
       var STEEL = new Float32Array([0.58, 0.57, 0.55]);
+      var STEEL2 = new Float32Array([0.38, 0.37, 0.35]);
       var HEMATITE = new Float32Array([0.16, 0.16, 0.16]);
 
       // dummy material properties
       var materials = new Array();
 
-      materials.push({ambient: STEEL, diffuse: STEEL, specular: STEEL, shininess: 4.0});
-      materials.push({ambient: HEMATITE, diffuse: HEMATITE, specular: HEMATITE, shininess: 16.0});
-      //materials.push({ambient: WHITE3, diffuse: WHITE3, specular: WHITE3, shininess: 16.0});
-
-      // you have 3 point light sources: the number of lights can be hard-coded in the shaders
+      materials.push({ambient: STEEL, diffuse: STEEL, specular: STEEL2, shininess: 4.0});
+      materials.push({ambient: HEMATITE, diffuse: HEMATITE, specular: WHITE3, shininess: 32.0});
     </script>
 
-    <!--
-    define shaders
-
-    the following attributes and uniforms are set by javascript so that they can
-    be used in glsl.
-
-    // vertex attributes
-    attribute vec3 vertexPosition;
-    attribute vec3 vertexNormal;
-    attribute vec2 textureCoord;
-
-    // transformation matrices
-    uniform mat4 projectionMatrix;
-    uniform mat4 modelViewMatrix;
-    uniform mat3 normalMatrix;
-
-    // material properties
-    uniform vec3 materialAmbientColor;
-    uniform vec3 materialDiffuseColor;
-    uniform vec3 materialSpecularColor;
-    uniform float materialShininess;
-
-    // point light sources
-    uniform vec3 lightPosition[3];
-    uniform vec3 lightColor[3];
-    uniform vec3 globalAmbientLightColor;
-
-    -->
-	
-	<!--
-		how to include your shader files?
-		
-		create a vertex and a fragment shader file in the "brdf" folder
-		(for example "shader_name.glslv" and "shader_name.glslf")
-		(you can copy'n'paste the ambient example)
-		
-		add a line here:
-			shadersList.push("name_of_the_files_without_extension");
-	-->
 	<script type="text/javascript">
-        shadersList.push("6_cook_torrance");
         shadersList.push("C_earth");
         shadersList.push("B_marble");
         shadersList.push("A_wood");
         shadersList.push("7_svbrdf");
+        shadersList.push("6_cook_torrance");
         shadersList.push("5_wards");
         shadersList.push("4_blinn-phong");
         shadersList.push("3_phong_lighting");

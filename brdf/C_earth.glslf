@@ -208,9 +208,10 @@ float bumpMapping(vec3 shift) {
 
 vec3 computeEarthNormals(vec3 N, float height, float cloudiness) {
     float eps = 1.0;
-    float aX = bumpMapping(vec3(eps, 0.0, 0.0)) * 0.1;
-    float aY = bumpMapping(vec3(0.0, eps, 0.0)) * 0.1;
-    float aZ = bumpMapping(vec3(0.0, 0.0, eps)) * 0.1;
+    float scale = 20.0;
+    float aX = bumpMapping(vec3(eps, 0.0, 0.0)) * scale;
+    float aY = bumpMapping(vec3(0.0, eps, 0.0)) * scale;
+    float aZ = bumpMapping(vec3(0.0, 0.0, eps)) * scale;
     
     mat3 rotX = mat3(1., 0., 0.,
                      0., cos(aX), -sin(aX),
@@ -229,7 +230,7 @@ vec3 computeEarthNormals(vec3 N, float height, float cloudiness) {
     return normalize(N - max(1.0 - height, 0.0));
 }
 
-vec3 step = vec3(0.2, 0.4, 0.78);
+vec3 step = vec3(0.2, 0.4, 0.78)*2.0;
 
 void main() {
     vec3 color = vec3(0.0,0.0,0.0);
@@ -254,7 +255,7 @@ void main() {
     // ambient
     color += (cloudColor.xyz + surfaceColor.xyz) * globalAmbientLightColor;
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 3; i++) {
 
         vec3 lightDirection = normalize(lightPosition[i] - point);
         vec3 reflectedDirection = normalize(reflect(-lightDirection, normalDirection)); // vector of reflected light

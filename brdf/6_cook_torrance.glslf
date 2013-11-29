@@ -25,7 +25,7 @@ void main() {
 	vec3 normalDirection = normalize(normal);
 	vec3 viewDirection = normalize(-point);
 	
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 3; i++) {
 		vec3 lightDirection = normalize(lightPosition[i]-point);
 		vec3 halfwayDirection = normalize(viewDirection + lightDirection);
 	
@@ -48,7 +48,7 @@ void main() {
 			float G2 = (2.0 * dotNH * dotNL) / dotHV;
 			float G = min(1.0, min(G1, G2));
 				
-			float Rs = (F*D*G) / (3.14159 * dotNL * dotNV);
+			float Rs = (F*D*G) / (3.14159 * dotNL * dotNV)*1.5;
 			color += (Rs*lightColor[i]*materialSpecularColor + lightColor[i]*materialDiffuseColor) * dotNL;
 		}
     }
