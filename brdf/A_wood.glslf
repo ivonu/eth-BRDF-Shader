@@ -16,8 +16,9 @@ varying vec3 textureCoordinate;
 varying vec3 normal;
 varying vec4 position;
 
-vec3 color_bright = vec3(249./255., 195./255., 150./255.);
-vec3 color_dark = vec3(150./255., 111./255., 51./255.);
+vec3 color_darkest = vec3(92./255., 64./255., 51./255.);
+vec3 color_dark = vec3(222./255., 184./255., 135./255.);
+vec3 color_bright = vec3(245./255., 222./255., 179./255.);
 
 vec3 mod289(vec3 x) {
     return x - floor(x * (1. / 289.)) * 289.;
@@ -109,23 +110,33 @@ vec3 getWoodColor() {
 
     float scale = 10.0/objectSize;
     float shift = 0.0;
-    float x = scale * textureCoordinate.x + shift + 50.0;
+    float x = scale * textureCoordinate.x + shift + 20.0;
     float y = scale * textureCoordinate.y + shift + 0.0;
     float z = scale * textureCoordinate.z + shift + 0.0;
 
     float frequency = 1.;
     float amplitude = 1.;
     float c = 0.;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 4; i++) {
         c += amplitude * cnoise (frequency * vec3(x,y,z));
-        amplitude *= 0.5;
+        amplitude *= 0.7;
         frequency *= 2.;
     }
 
-    c = sin(sqrt(x*x + y*y)*5.0 + c);
-    c = c-floor(c);
+    c = (sin(sqrt(x*x + y*y * 2.0)*5.0 + c+z*3.0));
+    float c2 = c-floor(c)*1.0;
 
-    return mix (color_bright, color_dark, c);
+    color_dark -= 0.2;
+    color_bright -= 0.2;
+
+    if (c < 0.3)
+        return mix (color_dark, color_bright, c2);
+
+    if (c < 0.7)
+        return mix (color_bright, color_dark, c2);
+
+    return mix (color_dark, color_bright, c2-0.3);
+
 }
 
 
@@ -149,7 +160,7 @@ void main() {
         if (materialShininess > 0.0) {
             vec3 reflectedDirection = normalize(reflect(-lightDirection, normalDirection)); // vector of reflected light
             vec3 viewDirection = normalize(-point); // vector from point to camera
-            color += matColor * pow(max(0.0,dot(reflectedDirection, viewDirection)), materialShininess) * lightColor[i];
+            color += 0.5 * matColor * pow(max(0.0,dot(reflectedDirection, viewDirection)), materialShininess) * lightColor[i];
         }
     }
 
